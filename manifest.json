@@ -8,7 +8,7 @@
   "privacyPolicyUrl": "",
   "termsOfServiceUrl": "",
   "packageUrl": "https://ulises0smi-stack.github.io/pivot-suministros/",
-  "devMode": false,
+  "devMode": true,
   "components": [{
     "id": "pivot_suministros",
     "name": "Pivot Suministros",
