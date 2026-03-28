@@ -1,12 +1,23 @@
 {
-  "name": "Pivot Suministros v4",
-  "description": "Tabla pivot dinámica — v4: nulos configurables, formato Looker, locale auto, pivote por convención",
-  "devMode": true,
+  "name": "Pivot Suministros v5",
+  "description": "Tabla pivot dinámica con jerarquía expandible, subtotales, buscador y tooltips",
+  "organization": "ulises0smi-stack",
+  "organizationUrl": "https://github.com/ulises0smi-stack",
+  "logoUrl": "",
+  "supportUrl": "https://github.com/ulises0smi-stack/pivot-suministros/issues",
+  "privacyPolicyUrl": "",
+  "termsOfServiceUrl": "",
+  "packageUrl": "https://ulises0smi-stack.github.io/pivot-suministros/",
+  "devMode": false,
   "components": [{
     "id": "pivot_suministros",
     "name": "Pivot Suministros",
     "description": "Pivot dinámico configurable",
-    "resource": { "js": "viz.js", "config": "manifest.json" },
+    "iconUrl": "",
+    "resource": {
+      "js": "https://ulises0smi-stack.github.io/pivot-suministros/viz.js",
+      "config": "https://ulises0smi-stack.github.io/pivot-suministros/manifest.json"
+    },
     "data": [{
       "id": "concepts",
       "label": "Datos",
@@ -56,9 +67,9 @@
             "type": "SELECT_SINGLE",
             "defaultValue": "zero",
             "selectOptions": [
-              { "label": "0 (cero)",        "value": "zero"  },
-              { "label": "— (null)",         "value": "null"  },
-              { "label": "  (vacío/blank)",  "value": "blank" }
+              { "label": "0 (cero)",       "value": "zero"  },
+              { "label": "— (null)",        "value": "null"  },
+              { "label": "  (vacío/blank)", "value": "blank" }
             ]
           }
         ]
@@ -79,8 +90,8 @@
             "type": "SELECT_SINGLE",
             "defaultValue": "sticky",
             "selectOptions": [
-              { "label": "Fija a la derecha", "value": "sticky" },
-              { "label": "Al final del scroll", "value": "end" }
+              { "label": "Fija a la derecha",   "value": "sticky" },
+              { "label": "Al final del scroll", "value": "end"    }
             ]
           },
           {
@@ -143,8 +154,8 @@
               { "label": "Izquierda", "value": "left"   }
             ]
           },
-          { "id": "showGroupBorder", "label": "Separador entre grupos",    "type": "CHECKBOX",   "defaultValue": "true" },
-          { "id": "dimColWidth",     "label": "Ancho columna dimensiones", "type": "FONT_SIZE",  "defaultValue": "220"  }
+          { "id": "showGroupBorder", "label": "Separador entre grupos",    "type": "CHECKBOX",  "defaultValue": "true" },
+          { "id": "dimColWidth",     "label": "Ancho columna dimensiones", "type": "FONT_SIZE", "defaultValue": "220"  }
         ]
       }
     ]
