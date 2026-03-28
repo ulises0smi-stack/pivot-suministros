@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pivot v5 — Dev Preview</title>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; }
+    #dev-bar {
+      background: #1a3a5c; color: #9cf; font: 11px monospace;
+      padding: 4px 10px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+    }
+    #dev-bar span { margin-right: 16px; }
+  </style>
+</head>
+<body>
+<div id="dev-bar">
+  <span>⚙ Dev v5</span>
+  <span>ResizeObserver: redimensiona la ventana para ver el escalado de fuentes</span>
+  <span>IS_TOUCH: <strong id="touch-flag">?</strong></span>
+</div>
+
+<script>
+(function () {
+  /* ─── Campos ─── */
+  const dimFields = [
+    { id: 'dim_suministro',     name: 'Suministro',      type: 'DIMENSION' },
+    { id: 'dim_tiposuministro', name: 'Tipo suministro',  type: 'DIMENSION' },
+    { id: 'dim_producto',       name: 'Producto',         type: 'DIMENSION' },
+    { id: 'dim_mes',            name: 'Mes',              type: 'DIMENSION' },
+  ];
+  const metFields = [
+    { id: 'met_importe', name: 'Importe', type: 'METRIC',
+      config: { currencyCode: 'EUR', format: 'CURRENCY_EUR' } },
+    { id: 'met_m2',      name: 'm²',      type: 'METRIC', config: {} },
+    { id: 'met_coste',   name: 'Coste',   type: 'METRIC',
+      config: { currencyCode: 'EUR', format: 'CURRENCY_EUR' } },
+    { id: 'met_kg',      name: 'kg',      type: 'METRIC', config: {} },
+  ];
+
+  /* ─── Datos de prueba (incluye nulls para probar nullHandling) ─── */
+  const raw = [
+    ['Agua',          'Riego',       'Goteo P1',      '2025-01', 1200,  300,  980,    0],
+    ['Agua',          'Riego',       'Goteo P1',      '2025-02', 1350,  320, 1100, null],
+    ['Agua',          'Riego',       'Goteo P1',      '2025-03', 1100,  290,  900,    0],
+    ['Agua',          'Riego',       'Aspersión P2',  '2025-01',  800,  200,  640,    0],
+    ['Agua',          'Riego',       'Aspersión P2',  '2025-02',  870,  210,  700,    0],
+    ['Agua',          'Riego',       'Aspersión P2',  '2025-03',  750,  190,  610,    0],
+    ['Agua',          'Limpieza',    'Higiene nave',  '2025-01',  200,   50,  180,    0],
+    ['Agua',          'Limpieza',    'Higiene nave',  '2025-02',  190,   48,  170,    0],
+    ['Agua',          'Limpieza',    'Higiene nave',  '2025-03',  210,   52,  185,    0],
+    ['Fertilizante',  'Nitrogenado', 'Urea 46%',      '2025-01', 5400,    0, 4900, 2000],
+    ['Fertilizante',  'Nitrogenado', 'Urea 46%',      '2025-02', 5800,    0, 5200, 2200],
+    ['Fertilizante',  'Nitrogenado', 'Urea 46%',      '2025-03', 5200,    0, 4700, 2100],
+    ['Fertilizante',  'Fosfatado',   'Superfosfato',  '2025-01', 3200,    0, 2900, 1500],
+    ['Fertilizante',  'Fosfatado',   'Superfosfato',  '2025-02', 3400,    0, 3100, 1600],
+    ['Fertilizante',  'Fosfatado',   'Superfosfato',  '2025-03', 3100,    0, 2800, 1450],
+    ['Fertilizante',  'Potásico',    'Cloruro K',     '2025-01', 2100,    0, 1900,  900],
+    ['Fertilizante',  'Potásico',    'Cloruro K',     '2025-02', 2300,    0, 2100,  950],
+    ['Fertilizante',  'Potásico',    'Cloruro K',     '2025-03', 2000,    0, 1800,  870],
+    ['Energía',       'Eléctrica',   'Cuadro ppal',   '2025-01', 2100,    0, 1950,    0],
+    ['Energía',       'Eléctrica',   'Cuadro ppal',   '2025-02', 2300,    0, 2100,    0],
+    ['Energía',       'Eléctrica',   'Cuadro ppal',   '2025-03', 2050,    0, 1900,    0],
+    ['Energía',       'Gasoil',      'Generador',     '2025-01',  980,    0,  900, null],
+    ['Energía',       'Gasoil',      'Generador',     '2025-02', 1050,    0,  970,    0],
+    ['Energía',       'Gasoil',      'Generador',     '2025-03',  920,    0,  850,    0],
+    ['Fitosanitarios','Herbicidas',  'Glifosato',     '2025-01', 1800,    0, 1650,  120],
+    ['Fitosanitarios','Herbicidas',  'Glifosato',     '2025-02', 1900,    0, 1720,  130],
+    ['Fitosanitarios','Herbicidas',  'Glifosato',     '2025-03', 1700,    0, 1550,  110],
+    ['Fitosanitarios','Fungicidas',  'Cobre',         '2025-01',  950,    0,  870,   80],
+    ['Fitosanitarios','Fungicidas',  'Cobre',         '2025-02', 1050,    0,  960,   90],
+    ['Fitosanitarios','Fungicidas',  'Cobre',         '2025-03',  900,    0,  820,   75],
+  ];
+
+  const allFields = [...dimFields, ...metFields];
+  const rows = raw.map(r => {
+    const obj = {};
+    allFields.forEach((f, i) => { obj[f.id] = [r[i]]; });
+    return obj;
+  });
+
+  const mockStyle = {
+    pivotDimOverride:  { value: 'auto' },   // auto = última dim (Mes)
+    nullHandling:      { value: 'null' },   // 'zero' | 'null' | 'blank'
+    showRowTotals:     { value: 'true' },
+    rowTotalsPosition: { value: 'sticky' },
+    showColTotals:     { value: 'true' },
+    showSubtotals:     { value: 'true' },
+    headerBg:          { value: '#1a3a5c' },
+    headerText:        { value: '#ffffff' },
+    headerFontSize:    { value: '12' },
+    rowOddBg:          { value: '#ffffff' },
+    rowEvenBg:         { value: '#f2f6fa' },
+    rowText:           { value: '#2d2d2d' },
+    rowFontSize:       { value: '12' },
+    level1Bg:          { value: '#dce8f5' },
+    level2Bg:          { value: '#eef4fb' },
+    level3Bg:          { value: '#f7fafd' },
+    subtotalBg:        { value: '#e8f0f8' },
+    totalBg:           { value: '#c8ddf0' },
+    totalText:         { value: '#1a3a5c' },
+    metricAlign:       { value: 'right' },
+    showGroupBorder:   { value: 'true' },
+    dimColWidth:       { value: '220' },
+  };
+
+  window.dscc = {
+    objectTransform:  d => d,
+    subscribeToData:  (cb) => setTimeout(() => cb({
+      tables: { DEFAULT: { rows } },
+      fields: { concepts: allFields },
+      style:  mockStyle,
+    }), 0),
+    getTheme: () => null,
+  };
+
+  // Mostrar IS_TOUCH en la barra de dev
+  document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('touch-flag');
+    if (el) el.textContent = navigator.maxTouchPoints > 0 ? 'true (modo touch)' : 'false (modo mouse)';
+  });
+})();
+</script>
+<script src="viz.js"></script>
+</body>
+</html>
