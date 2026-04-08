@@ -9,155 +9,159 @@
   "termsOfServiceUrl": "",
   "packageUrl": "https://ulises0smi-stack.github.io/pivot-suministros/",
   "devMode": true,
-  "components": [{
-    "id": "pivot_suministros",
-    "name": "Pivot Suministros",
-    "description": "Pivot dinámico configurable",
-    "iconUrl": "",
-    "resource": {
-      "js": "https://ulises0smi-stack.github.io/pivot-suministros/viz.js",
-      "config": "https://ulises0smi-stack.github.io/pivot-suministros/manifest.json"
-    },
-    "data": [{
-      "id": "concepts",
-      "label": "Datos",
-      "elements": [
+  "components": [
+    {
+      "id": "pivot_suministros",
+      "name": "Pivot Suministros",
+      "description": "Pivot dinámico configurable",
+      "iconUrl": "",
+      "resource": {
+        "js": "https://ulises0smi-stack.github.io/pivot-suministros/viz.js",
+        "config": "https://ulises0smi-stack.github.io/pivot-suministros/manifest.json"
+      },
+      "data": [
         {
-          "id": "dimensions",
-          "label": "Dimensiones (la última será el pivote de columnas)",
-          "type": "DIMENSION",
-          "options": { "min": 2, "max": 5 }
+          "id": "concepts",
+          "label": "Datos",
+          "elements": [
+            {
+              "id": "dimensions",
+              "label": "Dimensiones (la última será el pivote de columnas)",
+              "type": "DIMENSION",
+              "options": { "min": 2, "max": 5 }
+            },
+            {
+              "id": "metrics",
+              "label": "Métricas",
+              "type": "METRIC",
+              "options": { "min": 1, "max": 10 }
+            }
+          ]
+        }
+      ],
+      "style": [
+        {
+          "id": "pivot",
+          "label": "Pivote",
+          "elements": [
+            {
+              "id": "pivotDimOverride",
+              "label": "Override pivote (avanzado — vacío = última dimensión)",
+              "type": "SELECT_SINGLE",
+              "defaultValue": "auto",
+              "selectOptions": [
+                { "label": "Automático (última dimensión)", "value": "auto" },
+                { "label": "Dimensión 1", "value": "0" },
+                { "label": "Dimensión 2", "value": "1" },
+                { "label": "Dimensión 3", "value": "2" },
+                { "label": "Dimensión 4", "value": "3" },
+                { "label": "Dimensión 5", "value": "4" }
+              ]
+            }
+          ]
         },
         {
-          "id": "metrics",
+          "id": "nulls",
+          "label": "Valores vacíos",
+          "elements": [
+            {
+              "id": "nullHandling",
+              "label": "Tratar celdas sin datos como",
+              "type": "SELECT_SINGLE",
+              "defaultValue": "zero",
+              "selectOptions": [
+                { "label": "0 (cero)", "value": "zero" },
+                { "label": "— (null)", "value": "null" },
+                { "label": " (vacío/blank)", "value": "blank" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "totals",
+          "label": "Totales",
+          "elements": [
+            {
+              "id": "showRowTotals",
+              "label": "Mostrar totales de fila",
+              "type": "CHECKBOX",
+              "defaultValue": "true"
+            },
+            {
+              "id": "rowTotalsPosition",
+              "label": "Posición totales de fila",
+              "type": "SELECT_SINGLE",
+              "defaultValue": "sticky",
+              "selectOptions": [
+                { "label": "Fija a la derecha", "value": "sticky" },
+                { "label": "Al final del scroll", "value": "end" }
+              ]
+            },
+            {
+              "id": "showColTotals",
+              "label": "Mostrar totales de columna",
+              "type": "CHECKBOX",
+              "defaultValue": "true"
+            },
+            {
+              "id": "showSubtotals",
+              "label": "Mostrar subtotales intermedios",
+              "type": "CHECKBOX",
+              "defaultValue": "true"
+            }
+          ]
+        },
+        {
+          "id": "header",
+          "label": "Cabecera",
+          "elements": [
+            { "id": "headerBg", "label": "Color de fondo", "type": "FILL_COLOR", "defaultValue": "#1a3a5c" },
+            { "id": "headerText", "label": "Color de texto", "type": "FONT_COLOR", "defaultValue": "#ffffff" },
+            { "id": "headerFontSize", "label": "Tamaño de fuente", "type": "FONT_SIZE", "defaultValue": "12" }
+          ]
+        },
+        {
+          "id": "rows",
+          "label": "Filas",
+          "elements": [
+            { "id": "rowOddBg", "label": "Fondo fila impar", "type": "FILL_COLOR", "defaultValue": "#ffffff" },
+            { "id": "rowEvenBg", "label": "Fondo fila par", "type": "FILL_COLOR", "defaultValue": "#f2f6fa" },
+            { "id": "rowText", "label": "Color de texto", "type": "FONT_COLOR", "defaultValue": "#2d2d2d" },
+            { "id": "rowFontSize", "label": "Tamaño de fuente", "type": "FONT_SIZE", "defaultValue": "12" }
+          ]
+        },
+        {
+          "id": "hierarchy",
+          "label": "Jerarquía",
+          "elements": [
+            { "id": "level1Bg", "label": "Fondo nivel 1", "type": "FILL_COLOR", "defaultValue": "#dce8f5" },
+            { "id": "level2Bg", "label": "Fondo nivel 2", "type": "FILL_COLOR", "defaultValue": "#eef4fb" },
+            { "id": "level3Bg", "label": "Fondo nivel 3", "type": "FILL_COLOR", "defaultValue": "#f7fafd" },
+            { "id": "subtotalBg", "label": "Fondo subtotal", "type": "FILL_COLOR", "defaultValue": "#e8f0f8" },
+            { "id": "totalBg", "label": "Fondo total global", "type": "FILL_COLOR", "defaultValue": "#c8ddf0" },
+            { "id": "totalText", "label": "Color texto totales", "type": "FONT_COLOR", "defaultValue": "#1a3a5c" }
+          ]
+        },
+        {
+          "id": "metrics_style",
           "label": "Métricas",
-          "type": "METRIC",
-          "options": { "min": 1, "max": 10 }
+          "elements": [
+            {
+              "id": "metricAlign",
+              "label": "Alineación numérica",
+              "type": "SELECT_SINGLE",
+              "defaultValue": "right",
+              "selectOptions": [
+                { "label": "Derecha", "value": "right" },
+                { "label": "Centro", "value": "center" },
+                { "label": "Izquierda", "value": "left" }
+              ]
+            },
+            { "id": "showGroupBorder", "label": "Separador entre grupos", "type": "CHECKBOX", "defaultValue": "true" },
+            { "id": "dimColWidth", "label": "Ancho columna dimensiones", "type": "FONT_SIZE", "defaultValue": "220" }
+          ]
         }
       ]
-    }],
-    "style": [
-      {
-        "id": "pivot",
-        "label": "Pivote",
-        "elements": [
-          {
-            "id": "pivotDimOverride",
-            "label": "Override pivote (avanzado — vacío = última dimensión)",
-            "type": "SELECT_SINGLE",
-            "defaultValue": "auto",
-            "selectOptions": [
-              { "label": "Automático (última dimensión)", "value": "auto" },
-              { "label": "Dimensión 1", "value": "0" },
-              { "label": "Dimensión 2", "value": "1" },
-              { "label": "Dimensión 3", "value": "2" },
-              { "label": "Dimensión 4", "value": "3" },
-              { "label": "Dimensión 5", "value": "4" }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "nulls",
-        "label": "Valores vacíos",
-        "elements": [
-          {
-            "id": "nullHandling",
-            "label": "Tratar celdas sin datos como",
-            "type": "SELECT_SINGLE",
-            "defaultValue": "zero",
-            "selectOptions": [
-              { "label": "0 (cero)",       "value": "zero"  },
-              { "label": "— (null)",        "value": "null"  },
-              { "label": "  (vacío/blank)", "value": "blank" }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "totals",
-        "label": "Totales",
-        "elements": [
-          {
-            "id": "showRowTotals",
-            "label": "Mostrar totales de fila",
-            "type": "CHECKBOX",
-            "defaultValue": "true"
-          },
-          {
-            "id": "rowTotalsPosition",
-            "label": "Posición totales de fila",
-            "type": "SELECT_SINGLE",
-            "defaultValue": "sticky",
-            "selectOptions": [
-              { "label": "Fija a la derecha",   "value": "sticky" },
-              { "label": "Al final del scroll", "value": "end"    }
-            ]
-          },
-          {
-            "id": "showColTotals",
-            "label": "Mostrar totales de columna",
-            "type": "CHECKBOX",
-            "defaultValue": "true"
-          },
-          {
-            "id": "showSubtotals",
-            "label": "Mostrar subtotales intermedios",
-            "type": "CHECKBOX",
-            "defaultValue": "true"
-          }
-        ]
-      },
-      {
-        "id": "header",
-        "label": "Cabecera",
-        "elements": [
-          { "id": "headerBg",       "label": "Color de fondo",   "type": "FILL_COLOR", "defaultValue": "#1a3a5c" },
-          { "id": "headerText",     "label": "Color de texto",   "type": "FONT_COLOR", "defaultValue": "#ffffff" },
-          { "id": "headerFontSize", "label": "Tamaño de fuente", "type": "FONT_SIZE",  "defaultValue": "12"      }
-        ]
-      },
-      {
-        "id": "rows",
-        "label": "Filas",
-        "elements": [
-          { "id": "rowOddBg",    "label": "Fondo fila impar",  "type": "FILL_COLOR", "defaultValue": "#ffffff" },
-          { "id": "rowEvenBg",   "label": "Fondo fila par",    "type": "FILL_COLOR", "defaultValue": "#f2f6fa" },
-          { "id": "rowText",     "label": "Color de texto",    "type": "FONT_COLOR", "defaultValue": "#2d2d2d" },
-          { "id": "rowFontSize", "label": "Tamaño de fuente",  "type": "FONT_SIZE",  "defaultValue": "12"      }
-        ]
-      },
-      {
-        "id": "hierarchy",
-        "label": "Jerarquía",
-        "elements": [
-          { "id": "level1Bg",   "label": "Fondo nivel 1",       "type": "FILL_COLOR", "defaultValue": "#dce8f5" },
-          { "id": "level2Bg",   "label": "Fondo nivel 2",       "type": "FILL_COLOR", "defaultValue": "#eef4fb" },
-          { "id": "level3Bg",   "label": "Fondo nivel 3",       "type": "FILL_COLOR", "defaultValue": "#f7fafd" },
-          { "id": "subtotalBg", "label": "Fondo subtotal",      "type": "FILL_COLOR", "defaultValue": "#e8f0f8" },
-          { "id": "totalBg",    "label": "Fondo total global",  "type": "FILL_COLOR", "defaultValue": "#c8ddf0" },
-          { "id": "totalText",  "label": "Color texto totales", "type": "FONT_COLOR", "defaultValue": "#1a3a5c" }
-        ]
-      },
-      {
-        "id": "metrics_style",
-        "label": "Métricas",
-        "elements": [
-          {
-            "id": "metricAlign",
-            "label": "Alineación numérica",
-            "type": "SELECT_SINGLE",
-            "defaultValue": "right",
-            "selectOptions": [
-              { "label": "Derecha",   "value": "right"  },
-              { "label": "Centro",    "value": "center" },
-              { "label": "Izquierda", "value": "left"   }
-            ]
-          },
-          { "id": "showGroupBorder", "label": "Separador entre grupos",    "type": "CHECKBOX",  "defaultValue": "true" },
-          { "id": "dimColWidth",     "label": "Ancho columna dimensiones", "type": "FONT_SIZE", "defaultValue": "220"  }
-        ]
-      }
-    ]
-  }]
+    }
+  ]
 }
