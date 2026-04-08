@@ -15,8 +15,8 @@
     "description": "Pivot dinámico configurable",
     "iconUrl": "",
     "resource": {
-      "js": "viz.js",
-      "config": "manifest.json"
+      "js": "https://ulises0smi-stack.github.io/pivot-suministros/viz.js",
+      "config": "https://ulises0smi-stack.github.io/pivot-suministros/manifest.json"
     },
     "data": [{
       "id": "concepts",
